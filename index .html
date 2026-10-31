@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="ออมเงิน">
+<meta name="theme-color" content="#16a34a">
+<title>ออมเงินทุกวัน</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;600;700&display=swap">
+<style>
+:root{--bg:#f3f7f4;--card:#fff;--tx:#14201a;--mut:#667a6e;--pri:#16a34a;--pri2:color-mix(in srgb,var(--pri) 16%,var(--card));--bd:#dfe8e2;--warn:#e11d48;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1713;--card:#18231d;--tx:#e8f2ec;--mut:#8da596;--bd:#26362d;--warn:#fb7185;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1713;--card:#18231d;--tx:#e8f2ec;--mut:#8da596;--bd:#26362d;--warn:#fb7185;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:"Noto Sans Thai",system-ui,sans-serif;line-height:1.5}
+main{max-width:480px;margin:0 auto;padding:14px 14px 40px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:12px}
+h1{font-size:20px;margin:4px 0 12px}
+h2{font-size:15px;margin:0 0 10px}
+.big{font-size:34px;font-weight:700;color:var(--pri)}
+.mut{color:var(--mut);font-size:13px}
+.bar{height:14px;background:var(--pri2);border-radius:99px;overflow:hidden;margin:10px 0 6px}
+.bar i{display:block;height:100%;background:var(--pri);width:0;transition:width .4s}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+button{font:inherit;color:inherit}
+.chip{border:1.5px solid var(--bd);background:var(--card);border-radius:12px;padding:10px 0;font-weight:600;cursor:pointer}
+.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}
+.btn{border:0;background:var(--pri);color:#fff;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer}
+.ghost{background:transparent;color:var(--mut);border:1px solid var(--bd)}
+.nav{width:38px;height:38px;border-radius:50%;border:1px solid var(--bd);background:var(--card);font-size:18px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+.wd{font-size:12px;color:var(--mut);padding:4px 0}
+.d{aspect-ratio:1/1.05;border-radius:10px;border:1px solid var(--bd);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;cursor:pointer;padding:0}
+.d small{font-size:11px;font-weight:700;color:var(--pri)}
+.d.s{background:var(--pri2);border-color:var(--pri)}
+.d.t{outline:2px solid var(--pri)}
+.d.f{opacity:.35;cursor:default}
+.d.e{border:0;background:none;cursor:default}
+.scroll{overflow-x:auto;max-height:320px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 6px;text-align:right;border-bottom:1px solid var(--bd)}
+th:first-child,td:first-child{text-align:left}
+th{color:var(--mut);font-weight:600;position:sticky;top:0;background:var(--card)}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:20}
+.sheet.show{display:flex}
+.sheet>div{background:var(--card);width:100%;max-width:480px;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px))}
+input[type=number]{width:90px;font:inherit;padding:8px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.win{background:var(--pri2);border:1px solid var(--pri);border-radius:14px;padding:12px;text-align:center;font-weight:600;margin-top:8px;display:none}
+.d small{white-space:nowrap;font-size:10px}
+input[type=text]{font:inherit;padding:8px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx)}
+.fl{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.fl .chip{padding:8px 14px;font-size:17px}
+.sw{width:34px;height:34px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0;box-shadow:0 0 0 1px var(--bd)}
+h1{color:var(--h1c,var(--tx))}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--pri);color:#fff;padding:10px 18px;border-radius:99px;font-weight:600;opacity:0;transition:.3s;z-index:30;pointer-events:none;max-width:90%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.cf{position:fixed;top:-30px;font-size:22px;z-index:40;pointer-events:none;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg);opacity:.8}}
+.bdg{font-size:13px;padding:4px 10px;border-radius:99px;border:1px solid var(--bd);color:var(--mut)}
+.bdg.on{background:var(--pri2);border-color:var(--pri);color:var(--tx)}
+.bounce{display:inline-block;animation:bn .6s}
+.ed,.dl{border:0;background:none;font-size:16px;cursor:pointer;padding:4px 6px}
+@keyframes bn{30%{transform:scale(1.5) rotate(-12deg)}}
+.sw.on{border-color:var(--tx)}
+</style>
+</head>
+<body>
+<main>
+<h1><span id="hIcon">🐷</span> <span id="hTitle">ออมเงินทุกวัน</span></h1>
+
+<div class="card">
+  <div class="mut">ออมได้แล้ว</div>
+  <div class="row"><div class="big" id="total">0</div><div class="mut" id="goalTxt"></div></div>
+  <div class="bar"><i id="fill"></i></div>
+  <div class="row mut"><span id="pct"></span><span id="eta"></span></div>
+  <div id="stats" class="row mut" style="margin-top:8px;flex-wrap:wrap"></div><div id="badges" class="fl"></div><div class="win" id="win">🎉 ยินดีด้วย! ออมครบตามเป้าหมายแล้ว</div>
+</div>
+
+<div class="card">
+  <h2 id="todayTitle">วันนี้</h2>
+  <div class="mut" id="todayStat"></div>
+  <div class="chips" id="quick"></div>
+  <div class="row" style="margin-top:10px"><input type="number" id="cust" min="1" inputmode="decimal" placeholder="พิมพ์ยอดเอง (บาท)" style="flex:1;width:auto"><button class="btn" id="custBtn">บันทึก</button></div>
+</div>
+
+<div class="card">
+  <div class="row" style="margin-bottom:10px">
+    <button class="nav" id="prev" aria-label="เดือนก่อน">‹</button>
+    <h2 id="mTitle" style="margin:0"></h2>
+    <button class="nav" id="next" aria-label="เดือนถัดไป">›</button>
+  </div>
+  <div class="grid" id="cal"></div>
+  <div class="mut" style="margin-top:8px">แตะที่วันเพื่อบันทึกหรือแก้ไขยอด (พิมพ์ยอดเองได้)</div>
+</div>
+
+<div class="card">
+  <h2>📊 สรุปรายเดือน (6 เดือนล่าสุด)</h2><div id="chart"></div></div>
+<div class="card">
+  <h2>ตารางประวัติการออม</h2>
+  <div class="scroll"><table><thead><tr><th>วันที่</th><th>ออม</th><th>สะสม</th><th></th></tr></thead><tbody id="tb"></tbody></table></div>
+  <div id="empty" class="mut" style="padding:10px 0">ยังไม่มีข้อมูล เริ่มออมวันนี้เลย!</div>
+</div>
+
+<div class="card">
+  <div class="row">
+    <label class="mut">เป้าหมาย (บาท) <input type="number" id="goalIn" min="100" step="100"></label>
+    <button class="btn ghost" id="reset">ล้างข้อมูล</button>
+  </div>
+  <div class="mut" style="margin-top:10px">เพิ่มลงหน้าจอหลัก: iPhone แตะปุ่มแชร์ → “เพิ่มไปยังหน้าจอโฮม” · Android เมนู ⋮ → “เพิ่มลงในหน้าจอหลัก”</div>
+</div>
+<div class="card">
+  <h2>ปรับแต่งแอพ</h2>
+  <div class="mut">ชื่อแอพ</div><input type="text" id="tIn" maxlength="30" style="width:100%;margin:4px 0 12px">
+  <div class="mut">โหมดสี</div><div class="fl" id="modes"></div>
+  <div class="mut" style="margin-top:12px">สีธีม</div><div class="fl" id="pal"></div>
+  <div class="mut" style="margin-top:12px">สีพื้นหลัง</div><div class="fl" id="bgs"></div>
+  <div class="mut" style="margin-top:8px">หรือเลือกสีเอง <input type="color" id="bgc" style="width:44px;height:32px;padding:0;border:0;background:none;vertical-align:middle"></div>
+  <div class="mut" style="margin-top:12px">ไอคอนหัวข้อ</div><div class="fl" id="icons"></div>
+  <div class="mut" style="margin-top:12px">ไอคอนวันที่ออมแล้ว</div><div class="fl" id="marks"></div>
+  <div class="mut" style="margin-top:12px">ปุ่มยอดด่วน 3 ปุ่ม (บาท)</div>
+  <div class="fl"><input type="number" id="q0" min="1"><input type="number" id="q1" min="1"><input type="number" id="q2" min="1"></div>
+</div>
+<div class="card">
+  <h2>เครื่องมือ</h2>
+  <label class="row" style="margin-bottom:10px"><span>🔊 เสียงเหรียญ + สั่นเบาๆ</span><input type="checkbox" id="snd"></label>
+  <div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start"><button class="btn" id="shareBtn">แชร์ความคืบหน้า</button><button class="btn ghost" id="bkBtn">สำรองข้อมูล</button><button class="btn ghost" id="rsBtn">กู้ข้อมูล</button></div>
+  <textarea id="bkTxt" rows="5" style="display:none;width:100%;margin-top:10px;font-size:12px;border-radius:10px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);padding:8px"></textarea>
+  <button class="btn" id="bkOk" style="display:none;margin-top:8px">ยืนยันกู้ข้อมูล</button>
+  <div class="mut" id="bkHint" style="margin-top:8px"></div>
+</div>
+</main>
+
+<div id="toast"></div>
+<div class="sheet" id="sheet"><div>
+  <h2 id="shTitle"></h2>
+  <div class="chips" id="shChips"></div>
+  <div class="row" style="margin-top:10px"><input type="number" id="shCust" min="1" inputmode="decimal" placeholder="พิมพ์ยอดเอง (บาท)" style="flex:1;width:auto"><button class="btn" id="shCustBtn">บันทึก</button></div>
+  <div class="row" style="margin-top:14px">
+    <button class="btn ghost" id="shDel">ลบรายการ</button>
+    <button class="btn" id="shClose">ปิด</button>
+  </div>
+</div></div>
+
+<script>
+(function(){
+var KEY="saving-app-v1",MN=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"],
+WD=["อา","จ","อ","พ","พฤ","ศ","ส"],mem=null;
+var data={goal:1000,days:{},quick:[10,15,20],theme:{color:"#16a34a",mode:"auto",icon:"🐷",mark:"✔",title:"ออมเงินทุกวัน"}};
+try{var r=localStorage.getItem(KEY);if(r){var p=JSON.parse(r);if(p&&p.days){for(var x in p)data[x]=p[x]}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(data))}catch(e){}}
+function key(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function pk(k){var a=k.split("-");return new Date(+a[0],+a[1]-1,+a[2])}
+function th(d){return d.getDate()+" "+MN[d.getMonth()].slice(0,3).replace(/^(.{3})$/,"$1")+" "+(d.getFullYear()+543)}
+function thFull(d){return d.getDate()+" "+MN[d.getMonth()]+" "+(d.getFullYear()+543)}
+var now=new Date(),todayK=key(now),view=new Date(now.getFullYear(),now.getMonth(),1),sel=null;
+function $(i){return document.getElementById(i)}
+var PAL=["#16a34a","#2563eb","#db2777","#7c3aed","#ea580c","#0d9488","#ca8a04"],ICONS=["🐷","💰","🪙","🎯","⭐","🐱","🌱","🏆"],MARKS=["✔","⭐","💰","🪙","❤️","🔥","🌱",""],MODES=[["auto","อัตโนมัติ"],["light","สว่าง"],["dark","มืด"]];
+function makeIcon(){var T=data.theme,s=T.color+T.icon;if(makeIcon.s===s)return;makeIcon.s=s;try{var c=document.createElement("canvas");c.width=c.height=180;var x=c.getContext("2d");x.fillStyle=T.color;x.fillRect(0,0,180,180);x.font="100px serif";x.textAlign="center";x.textBaseline="middle";x.fillText(T.icon,90,98);var l=document.querySelector("link[rel=apple-touch-icon]");if(!l){l=document.createElement("link");l.rel="apple-touch-icon";document.head.appendChild(l)}l.href=c.toDataURL("image/png")}catch(e){}}
+var BGS=["","#fff7e6","#e0f2fe","#fce7f3","#ede9fe","#dcfce7","#1e293b","#000000"];
+function lum(h){var n=parseInt(h.slice(1),16);return (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255}
+function applyTheme(){var T=data.theme,r=document.documentElement;r.style.setProperty("--pri",T.color);
+ if(T.bg){r.style.setProperty("--bg",T.bg);r.style.setProperty("--h1c",lum(T.bg)<.5?"#fff":"#14201a")}else{r.style.removeProperty("--bg");r.style.removeProperty("--h1c")}if(T.mode==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",T.mode);$("hIcon").textContent=T.icon;makeIcon();$("hTitle").textContent=T.title;document.title=T.title;var m=document.querySelector('meta[name=theme-color]');if(m)m.content=T.color}
+function pick(el,items,cur,fn){el.innerHTML="";items.forEach(function(it){var a=Array.isArray(it),v=a?it[0]:it,b=document.createElement("button");if(el.id==="pal"||el.id==="bgs"){b.className="sw"+(v===cur?" on":"");b.style.background=v||"linear-gradient(135deg,#fff 50%,#0f1713 50%)"}else{b.className="chip"+(v===cur?" on":"");b.textContent=a?it[1]:(it||"ไม่มี")}b.onclick=function(){fn(v);save();render()};el.appendChild(b)})}
+function renderSettings(){var T=data.theme;
+ pick($("modes"),MODES,T.mode,function(v){T.mode=v});
+ pick($("pal"),PAL,T.color,function(v){T.color=v});
+ pick($("bgs"),BGS,T.bg||"",function(v){T.bg=v});
+ if(document.activeElement!==$("bgc"))$("bgc").value=T.bg||"#f3f7f4";
+ pick($("icons"),ICONS,T.icon,function(v){T.icon=v});
+ pick($("marks"),MARKS,T.mark,function(v){T.mark=v});
+ if(document.activeElement!==$("tIn"))$("tIn").value=T.title;
+ [0,1,2].forEach(function(i){var e=$("q"+i);if(document.activeElement!==e)e.value=data.quick[i]})}
+function custom(k,inp){var v=Math.round(parseFloat(inp.value)*100)/100;if(v>0&&v<=1000000){setAmt(k,v);inp.value="";return true}return false}
+$("bgc").oninput=function(){data.theme.bg=this.value;save();applyTheme()};
+function beep(){if(data.snd===false)return;try{var A=window.AudioContext||window.webkitAudioContext,c=beep.c||(beep.c=new A()),o=c.createOscillator(),g=c.createGain();o.type="square";o.frequency.setValueAtTime(988,c.currentTime);o.frequency.setValueAtTime(1319,c.currentTime+.08);g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.3);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.3)}catch(e){}try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}}
+function chart(){var M={},i,o=[],mx=1;for(var k in data.days){var m=k.slice(0,7);M[m]=(M[m]||0)+data.days[k]}
+ for(i=5;i>=0;i--){var d=new Date(now.getFullYear(),now.getMonth()-i,1),v=M[key(d).slice(0,7)]||0;o.push([d,v]);if(v>mx)mx=v}
+ $("chart").innerHTML='<div style="display:flex;align-items:flex-end;gap:8px;height:130px">'+o.map(function(x){var h=Math.round(x[1]/mx*90);return '<div style="flex:1;text-align:center;font-size:11px"><div style="font-weight:700;color:var(--pri)">'+(x[1]||"")+'</div><div style="height:'+h+'px;min-height:'+(x[1]?4:2)+'px;background:'+(x[1]?"var(--pri)":"var(--bd)")+';border-radius:6px 6px 0 0;margin-top:2px"></div><div class="mut" style="font-size:11px">'+MN[x[0].getMonth()].slice(0,4)+'</div></div>'}).join("")+'</div>'}
+function manual(tx){var a=$("bkTxt");a.style.display="block";a.value=tx;a.select();$("bkHint").textContent="แตะค้างที่ข้อความแล้วเลือกคัดลอก"}
+$("shareBtn").onclick=function(){var tx=data.theme.icon+" ฉันออมได้ "+total().toLocaleString("th-TH")+" จาก "+data.goal.toLocaleString("th-TH")+" บาทแล้ว ติดต่อกัน "+streak()+" วัน!";try{if(navigator.share){navigator.share({text:tx});return}}catch(e){}try{navigator.clipboard.writeText(tx).then(function(){toast("คัดลอกข้อความแล้ว 📋")},function(){manual(tx)})}catch(e){manual(tx)}};
+$("bkBtn").onclick=function(){var a=$("bkTxt");a.style.display="block";a.value=JSON.stringify(data);$("bkOk").style.display="none";$("bkHint").textContent="แตะค้างที่กล่องข้อความ → เลือกทั้งหมด → คัดลอก แล้วเก็บไว้ในโน้ต";a.select()};
+$("rsBtn").onclick=function(){var a=$("bkTxt");a.style.display="block";a.value="";$("bkOk").style.display="inline-block";$("bkHint").textContent="วางข้อมูลสำรองลงในกล่อง แล้วกดยืนยัน (ข้อมูลปัจจุบันจะถูกแทนที่)"};
+$("bkOk").onclick=function(){try{var p=JSON.parse($("bkTxt").value);if(!p||typeof p.days!=="object")throw 0;for(var x in p)data[x]=p[x];if(!Array.isArray(data.quick)||data.quick.length<3)data.quick=[10,15,20];save();render();$("bkTxt").style.display="none";$("bkOk").style.display="none";$("bkHint").textContent="";toast("กู้ข้อมูลสำเร็จ ✅")}catch(e){$("bkHint").textContent="ข้อมูลไม่ถูกต้อง ลองวางใหม่อีกครั้ง"}};
+$("snd").checked=data.snd!==false;$("snd").onchange=function(){data.snd=this.checked;save()};
+$("tb").onclick=function(e){var b=e.target.closest("button");if(!b)return;var k=b.dataset.k;if(b.className==="ed"){openSheet(k);return}if(b.dataset.c==="1"){setAmt(k,0);toast("ลบรายการแล้ว 🗑️");return}b.dataset.c="1";b.textContent="ลบ?";setTimeout(function(){b.dataset.c="";b.textContent="🗑️"},3000)};
+$("custBtn").onclick=function(){custom(todayK,$("cust"))};
+$("shCustBtn").onclick=function(){if(sel&&custom(sel,$("shCust")))closeSheet()};
+$("tIn").oninput=function(){data.theme.title=this.value||"ออมเงิน";save();applyTheme()};
+[0,1,2].forEach(function(i){$("q"+i).onchange=function(){var v=Math.round(parseFloat(this.value)*100)/100;if(v>0)data.quick[i]=v;save();render()}});
+function total(){var t=0;for(var k in data.days)t+=data.days[k];return t}
+function setAmt(k,v){var b=total();if(v)data.days[k]=v;else delete data.days[k];save();render();if(v)cheer(b)}
+var MSG=["เก่งมาก! 👏","เงินน้อยๆ รวมกันก็เยอะ 💪","ขอบคุณตัวเองที่ไม่ลืมออม 🐷","อีกก้าวสู่เป้าหมายแล้ว 🎯","วันนี้คุณทำได้ ✨"];
+function toast(s){var t=$("toast");t.textContent=s;t.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(function(){t.classList.remove("show")},2200)}
+function confetti(n){var E=["🎉","✨","🪙","⭐","💚"];for(var i=0;i<n;i++){var s=document.createElement("span");s.className="cf";s.textContent=E[i%E.length];s.style.left=Math.random()*100+"vw";s.style.animationDelay=Math.random()*.6+"s";document.body.appendChild(s);(function(s){setTimeout(function(){s.remove()},2600)})(s)}}
+function cheer(b){beep();var hi=$("hIcon");hi.classList.remove("bounce");void hi.offsetWidth;hi.classList.add("bounce");var t=total(),g=data.goal;if(b<g&&t>=g){confetti(40);toast("🎉 ครบเป้าหมายแล้ว! สุดยอด!");return}var ms=[25,50,75].filter(function(m){return b/g*100<m&&t/g*100>=m});if(ms.length){confetti(24);toast("ถึง "+ms[ms.length-1]+"% แล้ว! 🔥");return}confetti(10);toast(MSG[Math.floor(Math.random()*MSG.length)])}
+function streak(){var d=new Date(now.getFullYear(),now.getMonth(),now.getDate());if(!data.days[key(d)])d.setDate(d.getDate()-1);var n=0;while(data.days[key(d)]){n++;d.setDate(d.getDate()-1)}return n}
+function chipsInto(el,k){el.innerHTML="";var cur=data.days[k]||0;
+ for(var v=10;v<=20;v++){var b=document.createElement("button");b.className="chip"+(cur===v?" on":"");b.textContent=v;
+  (function(v){b.onclick=function(){setAmt(k,cur===v?0:v);if(el.id==="shChips")closeSheet()}})(v);el.appendChild(b)}}
+function openSheet(k){sel=k;$("shTitle").textContent=thFull(pk(k));chipsInto($("shChips"),k);$("shCust").value=data.days[k]||"";$("shDel").style.display=data.days[k]?"":"none";$("sheet").classList.add("show")}
+function closeSheet(){$("sheet").classList.remove("show");sel=null}
+$("shClose").onclick=closeSheet;
+$("sheet").onclick=function(e){if(e.target===this)closeSheet()};
+$("shDel").onclick=function(){if(sel)setAmt(sel,0);closeSheet()};
+$("prev").onclick=function(){view=new Date(view.getFullYear(),view.getMonth()-1,1);render()};
+$("next").onclick=function(){view=new Date(view.getFullYear(),view.getMonth()+1,1);render()};
+$("goalIn").onchange=function(){var g=parseInt(this.value,10);if(g>0){data.goal=g;save()}render()};
+$("reset").onclick=function(){if($("reset").dataset.c==="1"){data.days={};save();$("reset").dataset.c="";$("reset").textContent="ล้างข้อมูล";render()}else{$("reset").dataset.c="1";$("reset").textContent="แตะอีกครั้งเพื่อยืนยัน";setTimeout(function(){$("reset").dataset.c="";$("reset").textContent="ล้างข้อมูล"},3000)}};
+function render(){
+ applyTheme();renderSettings();var t=total(),g=data.goal,pct=Math.min(100,Math.round(t/g*100));
+ $("total").textContent=t.toLocaleString("th-TH")+" ฿";
+ $("goalTxt").textContent="เป้าหมาย "+g.toLocaleString("th-TH")+" ฿";
+ $("fill").style.width=pct+"%";$("pct").textContent=pct+"%";
+ var nd=Object.keys(data.days).length;
+ $("stats").innerHTML="<span>🔥 ติดต่อกัน "+streak()+" วัน</span><span>ออมแล้ว "+nd+" วัน</span><span>เฉลี่ย "+(nd?Math.round(t/nd*10)/10:0)+" ฿/วัน</span>";
+ var LV=pct>=100?"👑 ราชาแห่งการออม":pct>=75?"🦁 เซียนออม":pct>=50?"🦊 นักออมตัวยง":pct>=25?"🐥 นักออมฝึกหัด":"🐣 นักออมมือใหม่";
+ $("stats").innerHTML+="<span style='width:100%'>ระดับ: "+LV+"</span>";chart();
+ $("badges").innerHTML=[[25,"🥉"],[50,"🥈"],[75,"🥇"],[100,"🏆"]].map(function(b){return '<span class="bdg'+(pct>=b[0]?" on":"")+'">'+b[1]+" "+b[0]+"%</span>"}).join("");
+ var n=Object.keys(data.days).length,rem=g-t;
+ $("win").style.display=t>=g?"block":"none";
+ $("eta").textContent=t>=g?"":"เหลืออีก "+rem.toLocaleString("th-TH")+" ฿ (ประมาณ "+Math.ceil(rem/(n?t/n:15))+" วัน)";
+ $("goalIn").value=g;
+ var tv=data.days[todayK];
+ $("todayTitle").textContent="วันนี้ "+thFull(now);
+ $("todayStat").textContent=tv?"ออมแล้ว "+tv+" บาท "+data.theme.mark+" (แตะเพื่อแก้ไข)":"ยังไม่ได้ออม เลือกจำนวนเงินได้เลย";
+ var q=$("quick");q.innerHTML="";
+ data.quick.forEach(function(v){var b=document.createElement("button");b.className="chip"+(tv===v?" on":"");b.textContent=v+" ฿";b.onclick=function(){setAmt(todayK,tv===v?0:v)};q.appendChild(b)});
+ var o=document.createElement("button");o.className="chip";o.textContent="อื่นๆ";o.onclick=function(){openSheet(todayK)};q.appendChild(o);
+ $("mTitle").textContent=MN[view.getMonth()]+" "+(view.getFullYear()+543);
+ var c=$("cal");c.innerHTML="";
+ WD.forEach(function(w){var d=document.createElement("div");d.className="wd";d.textContent=w;c.appendChild(d)});
+ var first=view.getDay(),days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate(),ms=0;
+ for(var i=0;i<first;i++){var e=document.createElement("div");e.className="d e";c.appendChild(e)}
+ for(var d=1;d<=days;d++){var dt=new Date(view.getFullYear(),view.getMonth(),d),k=key(dt),v=data.days[k],b=document.createElement("button");
+  b.className="d"+(v?" s":"")+(k===todayK?" t":"")+(k>todayK?" f":"");
+  b.innerHTML=d+(v?"<small>"+data.theme.mark+v+"</small>":"");if(v)ms+=v;
+  if(k<=todayK)(function(k){b.onclick=function(){openSheet(k)}})(k);else b.disabled=true;
+  c.appendChild(b)}
+ var ks=Object.keys(data.days).sort(),run=0,rows=[];
+ ks.forEach(function(k){run+=data.days[k];rows.push([k,data.days[k],run])});
+ rows.reverse();
+ $("tb").innerHTML=rows.map(function(r){return "<tr><td>"+thFull(pk(r[0]))+"</td><td>+"+r[1]+"</td><td>"+r[2].toLocaleString("th-TH")+"</td><td style='white-space:nowrap'><button class='ed' data-k='"+r[0]+"' aria-label='แก้ไข'>✏️</button><button class='dl' data-k='"+r[0]+"' aria-label='ลบ'>🗑️</button></td></tr>"}).join("");
+ $("empty").style.display=rows.length?"none":"block";
+}
+render();
+})();
+</script>
+</body>
+</html>
